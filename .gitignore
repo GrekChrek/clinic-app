@@ -1,0 +1,17 @@
+# секреты
+.env
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+# Node
+node_modules/
+dist/
+# загруженные файлы (PDF с анализами) — никогда в git
+storage/results/*
+!storage/results/.gitkeep
+# редакторы / ОС
+.idea/
+.vscode/
+.DS_Store
