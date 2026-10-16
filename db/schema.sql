@@ -4,9 +4,7 @@
 
 CREATE TYPE slot_status AS ENUM ('free', 'booked', 'unavailable');
 
-CREATE TYPE appointment_status AS ENUM ('recorded', 'canceled', 'completed', 'no_show');
-
-CREATE TYPE staff_role AS ENUM ('admin', 'registrar');
+CREATE TYPE appointment_status AS ENUM ('planned', 'canceled', 'completed', 'no_show');
 
 -- 1. ПАЦИЕНТЫ
 
@@ -59,7 +57,7 @@ CREATE TABLE services (
     specialty_id INT,
     name VARCHAR(255) NOT NULL,
     description TEXT,
-    price NUMERIC(10, 2) CHECK (price >= 0),
+    price NUMERIC(10, 2) CHECK (price > 0),
     CONSTRAINT fk_services_specialty FOREIGN KEY (specialty_id) REFERENCES specialties (id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
@@ -91,8 +89,7 @@ CREATE TABLE administrators (
     last_name VARCHAR(100) NOT NULL,
     phone VARCHAR(20) NOT NULL UNIQUE,
     email VARCHAR(255) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
-    role staff_role NOT NULL DEFAULT 'admin'
+    password_hash VARCHAR(255) NOT NULL
 );
 
 -- 7. ЗАПИСИ НА ПРИЁМ
@@ -100,7 +97,7 @@ CREATE TABLE appointments (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     patient_id INT NOT NULL,
     schedule_id INT NOT NULL,
-    status appointment_status NOT NULL DEFAULT 'recorded',
+    status appointment_status NOT NULL DEFAULT 'planned',
     cancel_reason TEXT CHECK (
         status <> 'canceled'
         OR cancel_reason IS NOT NULL
